@@ -1,0 +1,88 @@
+.carrito-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.carrito-item:hover {
+  transform: translateY(-2px);
+}
+
+.carrito-item-imagen {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.carrito-item-info {
+  text-align: center;
+}
+
+.carrito-item-info h3 {
+  margin: 0 0 0.3rem 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; 
+  font-size: 1rem; 
+  color: #333;
+}
+
+.carrito-item-info .categoria {
+  color: #87A96B;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  margin: 0 0 0.3rem 0;
+}
+
+.carrito-item-info .precio {
+  color: #A0522D;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; 
+  font-size: 1.1rem;
+}
+
+.btn-eliminar {
+  background: #D4A437;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background: #765c20;
+  transform: scale(1.1);
+}
+
+.btn-eliminar img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .carrito-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; 
+    text-align: left;
+  }
+
+  .carrito-item-info {
+    text-align: left;
+    flex: 1; 
+  }
+}
