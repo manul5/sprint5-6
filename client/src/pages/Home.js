@@ -1,39 +1,37 @@
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 
-const Home = ({ productosDestacados, cargando, onProductoClick, onVerCatalogo }) => {
+export default function Home({ productosDestacados, cargando, onProductoClick, onVerCatalogo }){
+  
   const carruselRef = useRef(null);
 
   const scrollCarrusel = (direction) => {
-  if (carruselRef.current) {
-    const scrollAmount = 300;
     const carrusel = carruselRef.current;
+    if(!carrusel) return;
+  
+    const scrollAmount = 300;
+    const { scrollLeft, scrollWidth, offsetWidth } = carrusel;
 
-    if (direction === 1) {
-      if (carrusel.scrollLeft + carrusel.offsetWidth >= carrusel.scrollWidth) {
-        carrusel.scrollLeft = 0;
-      } else {
-        carrusel.scrollLeft += scrollAmount;
-      }
-    } else {
-      if (carrusel.scrollLeft <= 0) {
-        carrusel.scrollLeft = carrusel.scrollWidth;
-      } else {
-        carrusel.scrollLeft -= scrollAmount;
-      }
-    }
-  }
-};
-
-  if (cargando) {
-    return <div className="cargando">Cargando...</div>;
+    if(direction === 1) {
+      carrusel.scrollLeft = scrollLeft + offsetWidth >= scrollWidth
+        ? 0
+        : scrollLeft + scrollAmount;  
+    }else {
+        carrusel.scrollLeft = scrollLeft <= 0
+          ? scrollWidth
+          : scrollLeft - scrollAmount;
+    } 
   }
 
+  if (cargando) return <div className="cargando">Cargando...</div>;
+  
   return (
     <div className="home">
       
+      {/* Hero banner */}
       <section className="hero-full">
         <img src="/assets/banner.png" alt="Banner Hermanos Jota" />
         <div className="hero-overlay">
@@ -43,15 +41,15 @@ const Home = ({ productosDestacados, cargando, onProductoClick, onVerCatalogo })
         </div>
       </section>
 
-      
-      {productosDestacados.length > 0 && (
+      {/* Carrusel de productos destacados */}
+      {!!productosDestacados.length && (
         <section className="destacados">
           <h2>Novedades y Promociones</h2>
           <p>Descubre nuestra selección de muebles más populares</p>
           
           <div className="carrusel-wrapper">
             <button className="carrusel-btn left" onClick={() => scrollCarrusel(-1)}>
-              ‹
+              <FontAwesomeIcon icon={faChevronLeft} />
             </button>
             
             <div className="carrusel" ref={carruselRef}>
@@ -66,32 +64,38 @@ const Home = ({ productosDestacados, cargando, onProductoClick, onVerCatalogo })
             </div>
             
             <button className="carrusel-btn right" onClick={() => scrollCarrusel(1)}>
-              ›
+              <FontAwesomeIcon icon={faChevronRight} />
             </button>
+            
           </div>
         </section>
       )}
 
-      
+      {/* Por qué elegirnos */}
       <section className="porque">
         <h2 className="porque-titulo">¿Por qué elegirnos?</h2>
         <div className="porque-grid">
-          <div className="porque-item">
-            <h3>Diseño Atemporal</h3>
-            <p>Minimalismo cálido que combina estética y funcionalidad</p>
-          </div>
-          <div className="porque-item">
-            <h3>Compromiso Sustentable</h3>
-            <p>Materiales certificados y procesos responsables</p>
-          </div>
-          <div className="porque-item">
-            <h3>Hecho en Comunidad</h3>
-            <p>Trabajamos en cooperación con artesanos locales</p>
-          </div>
+          {[
+            {
+              titulo: 'Diseño Atemporal',
+              texto: 'Minimalismo cálido que combina estética y funcionalidad',
+            },
+            {
+              titulo: 'Compromiso Sustentable',
+              texto: 'Materiales certificados y procesos responsables',
+            },
+            {
+              titulo: 'Hecho en Comunidad',
+              texto: 'Trabajamos en cooperación con artesanos locales',
+            },
+          ].map(({ titulo, texto }) => (
+            <div key={titulo} className="porque-item">
+              <h3>{titulo}</h3>
+              <p>{texto}</p>
+            </div>
+          ))}
         </div>
       </section>
     </div>
   );
 };
-
-export default Home;
