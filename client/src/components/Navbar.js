@@ -1,33 +1,29 @@
 import { useState, useCallback, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
-export default function Navbar({ 
-  cantidadCarrito, 
-  onMostrarHome, 
-  onMostrarCatalogo, 
-  onMostrarContacto,
-  onBuscar,
-  onMostrarCarrito,
-  vistaActual 
-}) {
+export default function Navbar({ cantidadCarrito }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [busquedaOpen, setBusquedaOpen] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleBuscar = useCallback((e) => {
     e.preventDefault();
-    if (onBuscar) onBuscar(busqueda.trim());
-  }, [busqueda, onBuscar]);
+    if (busqueda.trim()) {
+      navigate(`/productos?busqueda=${encodeURIComponent(busqueda.trim())}`);
+    }
+  }, [busqueda, navigate]);
 
   const handleChange = useCallback((e) => {
     setBusqueda(e.target.value);
   }, []);
 
-  const handleNavClick = useCallback((action) => {
+  const handleNavClick = useCallback(() => {
     setMenuOpen(false);
     setBusquedaOpen(false);
-    action();
   }, []);
 
   const toggleBusqueda = useCallback(() => {
@@ -43,10 +39,10 @@ export default function Navbar({
 
   const limpiarBusqueda = useCallback(() => {
     setBusqueda("");
-    if (onBuscar) onBuscar("");
-  }, [onBuscar]);
+    navigate('/productos');
+  }, [navigate]);
 
-  const mostrarBusqueda = vistaActual === 'catalogo';
+  const mostrarBusqueda = location.pathname === '/productos';
 
   return (
     <header>
@@ -58,10 +54,10 @@ export default function Navbar({
         ☰
       </button>
 
-      <div className="logo" onClick={() => handleNavClick(onMostrarHome)}>
+      <Link to="/" className="logo" onClick={handleNavClick}>
         <img src="/assets/logoHermanosJota.svg" alt="Hermanos Jota" />
         <span>Hermanos Jota</span>
-      </div>
+      </Link>
 
       {mostrarBusqueda && (
         <button type="button" className="lupita-mobile" onClick={toggleBusqueda}>
@@ -95,9 +91,9 @@ export default function Navbar({
       )}
 
       <nav className={menuOpen ? 'active' : ''}>
-        <a href="#!" onClick={(e) => { e.preventDefault(); handleNavClick(onMostrarHome); }}>Inicio</a>
-        <a href="#!" onClick={(e) => { e.preventDefault(); handleNavClick(onMostrarCatalogo); }}>Productos</a>
-        <a href="#!" onClick={(e) => { e.preventDefault(); handleNavClick(onMostrarContacto); }}>Contacto</a>
+        <Link to="/" onClick={handleNavClick}>Inicio</Link>
+        <Link to="/productos" onClick={handleNavClick}>Productos</Link>
+        <Link to="/contacto" onClick={handleNavClick}>Contacto</Link>
       </nav>
 
       {/* Buscador desktop */}
@@ -125,12 +121,12 @@ export default function Navbar({
         </form>
       )}
 
-      <div className="carrito" onClick={onMostrarCarrito}>
+      <Link to="/carrito" className="carrito">
         <img src="/assets/carritoCompra.png" alt="Carrito de compras" />
         {cantidadCarrito > 0 && (
           <span className="contador-carrito">{cantidadCarrito}</span>
         )}
-      </div>
+      </Link>
     </header>
   );
 }

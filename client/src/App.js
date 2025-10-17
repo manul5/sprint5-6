@@ -1,5 +1,5 @@
-
 import './App.css';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -7,17 +7,109 @@ import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import Contact from './pages/Contact';
 import Carrito from './pages/Carrito';
+import AdminCrearProducto from './pages/AdminCrearProducto';
 import Navbar from './components/Navbar';
 
+// Wrapper para Home
+function HomePage({ productosDestacados, cargando }) {
+  const navigate = useNavigate();
+  
+  return (
+    <Home 
+      productosDestacados={productosDestacados}
+      cargando={cargando}
+      onProductoClick={(producto) => navigate(`/productos/${producto.id}`)}
+      onVerCatalogo={() => navigate('/productos')}
+    />
+  );
+}
+
+// Wrapper para ProductList
+function ProductosPage({ productos, cargando }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const terminoBusqueda = searchParams.get('busqueda') || '';
+
+  useEffect(() => {
+    if (terminoBusqueda.trim().length >= 3) {
+      const filtrados = productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())
+      );
+      setProductosFiltrados(filtrados);
+    } else {
+      setProductosFiltrados(productos);
+    }
+  }, [terminoBusqueda, productos]);
+
+  return (
+    <ProductList 
+      productos={productosFiltrados}
+      cargando={cargando}
+      onProductoClick={(producto) => navigate(`/productos/${producto.id}`)}
+      terminoBusqueda={terminoBusqueda}
+    />
+  );
+}
+
+// Wrapper para ProductDetail
+function ProductDetailPage({ productos, onAgregarCarrito }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const producto = productos.find(p => p.id === parseInt(id));
+
+  if (!producto && productos.length > 0) {
+    return (
+      <div className="product-detail">
+        <div className="estado-carga">
+          <div className="error">Producto no encontrado</div>
+          <button className="btn" onClick={() => navigate('/productos')}>
+            Volver al catálogo
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!producto) {
+    return <div className="cargando">Cargando...</div>;
+  }
+
+  return (
+    <ProductDetail 
+      producto={producto}
+      onVolver={() => navigate('/productos')}
+      onAgregarCarrito={onAgregarCarrito}
+    />
+  );
+}
+
+// Wrapper para Contact
+function ContactPage() {
+  const navigate = useNavigate();
+  
+  return <Contact onVolver={() => navigate('/')} />;
+}
+
+// Wrapper para Carrito
+function CarritoPage({ carrito, onEliminarItem, onVaciarCarrito }) {
+  const navigate = useNavigate();
+  
+  return (
+    <Carrito 
+      carrito={carrito}
+      onEliminarItem={onEliminarItem}
+      onVaciarCarrito={onVaciarCarrito}
+      onSeguirComprando={() => navigate('/productos')}
+      onVolver={() => navigate('/')}
+    />
+  );
+}
+
 function App() {
-  const [vistaActual, setVistaActual] = useState('home');
-  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [carrito, setCarrito] = useState([]);
   const [productos, setProductos] = useState([]);
-  const [productosFiltrados, setProductosFiltrados] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [terminoBusqueda, setTerminoBusqueda] = useState('');
-
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -25,7 +117,6 @@ function App() {
         const response = await fetch('http://localhost:3000/api/productos');
         const data = await response.json();
         setProductos(data);
-        setProductosFiltrados(data); 
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -35,164 +126,85 @@ function App() {
     fetchProductos();
   }, []);
 
-  
+  const agregarAlCarrito = (producto) => {
+    setCarrito([...carrito, { ...producto, carritoId: Date.now() }]);
+    alert(`¡${producto.nombre} agregado al carrito!`);
+  };
 
-  const handleBuscar = async (termino) => {
-    setTerminoBusqueda(termino);
-    setCargando(true);
-    setTimeout(()=>{
-    if (termino.trim().length >= 3) {
-    const filtrados =  productos.filter(producto =>
-      producto.nombre.toLowerCase().includes(termino.toLowerCase())
-    );
+  const eliminarDelCarrito = (carritoId) => {
+    setCarrito(carrito.filter(item => item.carritoId !== carritoId));
+  };
 
-    setProductosFiltrados(filtrados);
-    
-    if (vistaActual === 'home') setVistaActual('catalogo');
-    } else{
-      setProductosFiltrados(productos);
-    }
-    setCargando(false);
-  } ,600);
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    alert('Carrito vaciado');
   };
 
   const productosDestacados = productos.filter(p => p.destacado);
 
-  const mostrarHome = () => {
-    setVistaActual('home');
-    setProductoSeleccionado(null);
-    setTerminoBusqueda(''); 
-    setProductosFiltrados(productos);
-  };
-
-  const mostrarCatalogo = async() => {
-    setVistaActual('catalogo');
-    setProductoSeleccionado(null);
-    setTerminoBusqueda('');
-
-    setCargando(true);
-
-    setTimeout(() => {
-      setProductosFiltrados(productos); 
-      setCargando(false);
-    }, 600);
-  };
-
-  const mostrarContacto = async() => {
-    setCargando(true);
-
-    setTimeout(() => {
-    setVistaActual('contacto');
-    setProductoSeleccionado(null);
-    setCargando(false);
-    }, 400);
-
-  };
-
-  const mostrarDetalle = async(producto) => {
-    setCargando(true);
-
-    setTimeout(() => {
-      setProductoSeleccionado(producto);
-      setVistaActual('detalle');
-      setCargando(false);
-    }, 600);
-  };
-
-
-  const agregarAlCarrito = async (producto) => {
-    setCargando(true);
-    setTimeout(() => {
-    setCarrito([...carrito, { ...producto, carritoId: Date.now() }]);
-    alert(`¡${producto.nombre} agregado al carrito!`);
-    setCargando(false);
-    }, 600);
-  };
-
-  const eliminarDelCarrito = (carritoId) => {
-    setCargando(true);
-    setTimeout(() => {
-    setCarrito(carrito.filter(item => item.carritoId !== carritoId));
-    setCargando(false);
-    }, 600);
-  };
-
-  const vaciarCarrito = () => {
-    setCargando(true);
-    setTimeout(() => {
-    setCarrito([]);
-    alert('Carrito vaciado');
-    setCargando(false);
-    }, 400);
-
-  };
-
-  const mostrarCarrito = async() => {
-    setCargando(true);
-
-    setTimeout(() => {
-    setVistaActual('carrito');
-    setCargando(false);
-    }, 400);
-  };
-
   return (
-    <div className="App">
-      <Navbar 
-        cantidadCarrito={carrito.length}
-        onMostrarHome={mostrarHome}
-        onMostrarCatalogo={mostrarCatalogo}
-        onMostrarContacto={mostrarContacto}
-        onBuscar={handleBuscar}
-        onMostrarCarrito={mostrarCarrito} 
-        vistaActual={vistaActual}
-      />
-      
-      <main>
-        {vistaActual === 'home' && (
-          <Home 
-            productosDestacados={productosDestacados}
-            cargando={cargando}
-            onProductoClick={mostrarDetalle}
-            onVerCatalogo={mostrarCatalogo}
-          />
-        )}
+    <Router>
+      <div className="App">
+        <Navbar cantidadCarrito={carrito.length} />
         
-        {vistaActual === 'catalogo' && (
-          <ProductList 
-            productos={productosFiltrados} 
-            cargando={cargando}
-            onProductoClick={mostrarDetalle}
-            terminoBusqueda={terminoBusqueda} 
-          />
-        )}
+        <main>
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <HomePage 
+                  productosDestacados={productosDestacados}
+                  cargando={cargando}
+                />
+              } 
+            />
+            
+            <Route 
+              path="/productos" 
+              element={
+                <ProductosPage 
+                  productos={productos}
+                  cargando={cargando}
+                />
+              } 
+            />
+            
+            <Route 
+              path="/productos/:id" 
+              element={
+                <ProductDetailPage 
+                  productos={productos}
+                  onAgregarCarrito={agregarAlCarrito}
+                />
+              } 
+            />
+            
+            <Route 
+              path="/contacto" 
+              element={<ContactPage />} 
+            />
+            
+            <Route 
+              path="/carrito" 
+              element={
+                <CarritoPage 
+                  carrito={carrito}
+                  onEliminarItem={eliminarDelCarrito}
+                  onVaciarCarrito={vaciarCarrito}
+                />
+              } 
+            />
+            
+            <Route 
+              path="/admin/crear-producto" 
+              element={<AdminCrearProducto />} 
+            />
+          </Routes>
+        </main>
         
-        {vistaActual === 'detalle' && productoSeleccionado && (
-          <ProductDetail 
-            producto={productoSeleccionado}
-            onVolver={mostrarCatalogo}
-            onAgregarCarrito={agregarAlCarrito}
-          />
-        )}
-        
-        
-        {vistaActual === 'carrito' && (
-          <Carrito 
-            carrito={carrito}
-            onEliminarItem={eliminarDelCarrito}
-            onVaciarCarrito={vaciarCarrito}
-            onSeguirComprando={mostrarCatalogo}
-            onVolver={mostrarHome}
-          />
-        )}
-        
-        {vistaActual === 'contacto' && (
-          <Contact onVolver={mostrarHome} />
-        )}
-      </main>
-      
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
