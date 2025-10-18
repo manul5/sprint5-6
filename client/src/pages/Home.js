@@ -1,30 +1,38 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { useRef } from 'react';
+import { useRef, useEffect,useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 
 export default function Home({ productosDestacados, cargando, onProductoClick, onVerCatalogo }){
   
   const carruselRef = useRef(null);
+  const [isScrollable, setIsScrollable] = useState(false);
+
+  useEffect(() => {
+    const carrusel = carruselRef.current;
+    if (!carrusel) return;
+
+    const checkScroll = () => {
+      setIsScrollable(carrusel.scrollWidth > carrusel.clientWidth + 5);
+    };
+
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [productosDestacados]);
 
   const scrollCarrusel = (direction) => {
     const carrusel = carruselRef.current;
-    if(!carrusel) return;
-  
+    if (!carrusel) return;
     const scrollAmount = 300;
-    const { scrollLeft, scrollWidth, offsetWidth } = carrusel;
 
-    if(direction === 1) {
-      carrusel.scrollLeft = scrollLeft + offsetWidth >= scrollWidth
-        ? 0
-        : scrollLeft + scrollAmount;  
-    }else {
-        carrusel.scrollLeft = scrollLeft <= 0
-          ? scrollWidth
-          : scrollLeft - scrollAmount;
-    } 
-  }
+    if (direction === 1) {
+      carrusel.scrollLeft += scrollAmount;
+    } else {
+      carrusel.scrollLeft -= scrollAmount;
+    }
+  };
 
   if (cargando) return <div className="cargando">Cargando...</div>;
   
@@ -48,24 +56,28 @@ export default function Home({ productosDestacados, cargando, onProductoClick, o
           <p>Descubre nuestra selección de muebles más populares</p>
           
           <div className="carrusel-wrapper">
-            <button className="carrusel-btn left" onClick={() => scrollCarrusel(-1)}>
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
+            {isScrollable && (
+              <button className="carrusel-btn left" onClick={() => scrollCarrusel(-1)}>
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+            )}
             
-            <div className="carrusel" ref={carruselRef}>
-              {productosDestacados.map(producto => (
+            <div
+              className={`carrusel ${!isScrollable ? 'centrado' : ''}`}
+              ref={carruselRef}
+            >
+              {productosDestacados.map((producto) => (
                 <div key={producto.id} className="carrusel-item">
-                  <ProductCard 
-                    producto={producto}
-                    onProductoClick={onProductoClick}
-                  />
+                  <ProductCard producto={producto} onProductoClick={onProductoClick} />
                 </div>
               ))}
             </div>
             
-            <button className="carrusel-btn right" onClick={() => scrollCarrusel(1)}>
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
+            {isScrollable && (
+              <button className="carrusel-btn right" onClick={() => scrollCarrusel(1)}>
+                <FontAwesomeIcon icon={faChevronRight} />
+              </button>
+            )}
             
           </div>
         </section>

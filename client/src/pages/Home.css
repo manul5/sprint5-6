@@ -217,3 +217,14 @@ body {
     height: 90vh; 
   }
 }
+
+/* Centrar carrusel si no hay overflow */
+.carrusel.centrado {
+  justify-content: center;
+  overflow-x: visible;
+}
+
+/* Ocultar flechas si no hay scroll */
+.carrusel-wrapper:has(.carrusel.centrado) .carrusel-btn {
+  display: none;
+}
