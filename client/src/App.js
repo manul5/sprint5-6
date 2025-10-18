@@ -92,7 +92,7 @@ function ContactPage() {
 }
 
 // Wrapper para Carrito
-function CarritoPage({ carrito, onEliminarItem, onVaciarCarrito }) {
+function CarritoPage({ carrito, onEliminarItem, onVaciarCarrito, actualizarCantidad }) {
   const navigate = useNavigate();
   
   return (
@@ -100,6 +100,7 @@ function CarritoPage({ carrito, onEliminarItem, onVaciarCarrito }) {
       carrito={carrito}
       onEliminarItem={onEliminarItem}
       onVaciarCarrito={onVaciarCarrito}
+      onActualizarCantidad={actualizarCantidad}
       onSeguirComprando={() => navigate('/productos')}
       onVolver={() => navigate('/')}
     />
@@ -127,7 +128,24 @@ function App() {
   }, []);
 
   const agregarAlCarrito = (producto) => {
-    setCarrito([...carrito, { ...producto, carritoId: Date.now() }]);
+    setCarrito((prevCarrito) => {
+      const existente = prevCarrito.find((item) => item.id === producto.id);
+
+      if (existente) {
+        // Si el producto ya está, aumentar la cantidad
+        return prevCarrito.map((item) =>
+          item.id === producto.id
+            ? { ...item, cantidad: (item.cantidad || 1) + 1 }
+            : item
+        );
+      }
+
+      // Si no está, agregarlo con cantidad = 1
+      return [
+        ...prevCarrito,
+        { ...producto, cantidad: 1, carritoId: crypto.randomUUID() },
+      ];
+    });
     alert(`¡${producto.nombre} agregado al carrito!`);
   };
 
@@ -138,6 +156,20 @@ function App() {
   const vaciarCarrito = () => {
     setCarrito([]);
     alert('Carrito vaciado');
+  };
+
+  const actualizarCantidad = (carritoId, delta) => {
+    setCarrito(prevCarrito =>
+      prevCarrito
+        .map(item => {
+          if (item.carritoId === carritoId) {
+            const nuevaCantidad = (item.cantidad || 1) + delta;
+            return nuevaCantidad > 0 ? { ...item, cantidad: nuevaCantidad } : null;
+          }
+          return item;
+        })
+        .filter(Boolean)
+    );
   };
 
   const productosDestacados = productos.filter(p => p.destacado);
@@ -191,6 +223,7 @@ function App() {
                   carrito={carrito}
                   onEliminarItem={eliminarDelCarrito}
                   onVaciarCarrito={vaciarCarrito}
+                  actualizarCantidad={actualizarCantidad}
                 />
               } 
             />

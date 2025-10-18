@@ -1,6 +1,5 @@
 .carrito-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 1rem;
   padding: 1rem;
@@ -8,6 +7,7 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s;
+  position: relative;
 }
 
 .carrito-item:hover {
@@ -19,58 +19,106 @@
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .carrito-item-info {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 1rem;
 }
 
-.carrito-item-info h3 {
-  margin: 0 0 0.3rem 0;
+.info-principal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.3rem;
+}
+
+.info-principal h3 {
+  margin: 0;
   font-family: 'Playfair Display', serif;
   font-weight: 700; 
   font-size: 1rem; 
   color: #333;
 }
 
-.carrito-item-info .categoria {
+.info-principal .categoria {
   color: #87A96B;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  margin: 0 0 0.3rem 0;
+  font-size: 0.9rem;
 }
 
-.carrito-item-info .precio {
+.info-principal .precio {
   color: #A0522D;
   font-family: 'Inter', sans-serif;
   font-weight: 700; 
   font-size: 1.1rem;
 }
 
+.info-secundaria {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cantidad-control button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #A0522D; 
+  background-color: white;
+  color: #A0522D;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cantidad-control button:hover {
+  background-color: #f5e6d3;
+  transform: scale(1.05);
+}
+
+.cantidad-control span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #765c20;
+  min-width: 80px;
+  text-align: center;
+}
+
 .btn-eliminar {
-  background: #D4A437;
+  background: #A0522D;
+  color: #f5e6d3; 
   border: none;
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-eliminar:hover {
-  background: #765c20;
-  transform: scale(1.1);
+  background: #c47a6d;
+  transform: scale(1.08);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-.btn-eliminar img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
 
 /* Desktop */
 @media (min-width: 768px) {
@@ -84,5 +132,13 @@
   .carrito-item-info {
     text-align: left;
     flex: 1; 
+  }
+  .info-secundaria {
+    justify-content: flex-start; /* los elementos se alinean al inicio */
+    gap: 0.5rem;
+  }
+
+  .btn-eliminar {
+    margin-top: 0.3rem; /* un pequeño espacio si se mueve a la línea de abajo */
   }
 }

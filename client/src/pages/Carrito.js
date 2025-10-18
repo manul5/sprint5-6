@@ -1,9 +1,9 @@
 import './Carrito.css';
 import CarritoItem from '../components/CarritoItem';
 
-export default function Carrito ({ carrito, onEliminarItem, onVaciarCarrito, onSeguirComprando, onVolver }){
+export default function Carrito ({ carrito, onEliminarItem, onVaciarCarrito, onSeguirComprando, onVolver, onActualizarCantidad }){
   const calcularTotal = () => {
-    return carrito.reduce((total, item) => total + item.precio, 0);
+    return carrito.reduce((total, item) => total + item.precio * (item.cantidad || 1), 0);
   };
 
   if (carrito.length === 0) {
@@ -35,7 +35,8 @@ export default function Carrito ({ carrito, onEliminarItem, onVaciarCarrito, onS
             <CarritoItem 
               key={item.carritoId} 
               item={item} 
-              onEliminar={onEliminarItem} 
+              onEliminar={onEliminarItem}
+              onActualizarCantidad={onActualizarCantidad} 
             />
           ))}
       </div>
@@ -48,12 +49,15 @@ export default function Carrito ({ carrito, onEliminarItem, onVaciarCarrito, onS
           </div>
           
           <div className="carrito-acciones">
+
             <button className="btn-vaciar" onClick={onVaciarCarrito}>
               Vaciar Carrito
             </button>
+            
             <button className="btn-comprar">
               Finalizar Compra
             </button>
+          
           </div>
 
           <button className="btn-seguir-comprando" onClick={onSeguirComprando}>
