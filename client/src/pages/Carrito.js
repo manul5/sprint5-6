@@ -50,7 +50,10 @@ export default function Carrito ({ carrito, onEliminarItem, onVaciarCarrito, onS
           
           <div className="carrito-acciones">
 
-            <button className="btn-vaciar" onClick={onVaciarCarrito}>
+            <button className="btn-vaciar" onClick={() => {
+              const confirmar = window.confirm("¿Seguro que querés vaciar el carrito?");
+              if (confirmar) onVaciarCarrito();
+            }}>
               Vaciar Carrito
             </button>
             

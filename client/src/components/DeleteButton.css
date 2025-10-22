@@ -1,0 +1,29 @@
+.btn-eliminar {
+  background-color: #A0522D; 
+  color: #F5E6D3; 
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; 
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.25s, transform 0.15s;
+}
+
+.btn-eliminar:hover {
+  background-color: #D4A437; 
+  transform: scale(1.03);
+}
+
+.btn-eliminar:active {
+  transform: scale(0.97);
+}
+
+.btn-eliminar:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  transform: none;
+}

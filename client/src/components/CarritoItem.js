@@ -4,14 +4,14 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function CarritoItem ({ item, onEliminar, onActualizarCantidad  }){
   
-  /*const handleEliminar = () => {
+  const handleEliminar = () => {
     const confirmar = window.confirm(
       `¿Deseás remover "${item.nombre}" de tu selección?`
     );
     if (confirmar) {
       onEliminar(item.carritoId);
     }
-  };*/
+  };
 
   return(
     <div className="carrito-item">
@@ -37,7 +37,7 @@ export default function CarritoItem ({ item, onEliminar, onActualizarCantidad  }
           
           <button 
             className="btn-eliminar"
-            onClick={() => onEliminar(item.carritoId)}
+            onClick={handleEliminar}
             title="Remover esta pieza">
             <FontAwesomeIcon icon={faTrashAlt} />
           </button>
