@@ -10,7 +10,12 @@
     "start-backend": "npm start --prefix backend",
     "start-client": "npm start --prefix client"
   },
-  "keywords": ["react", "express", "ecommerce", "muebleria"],
+  "keywords": [
+    "react",
+    "express",
+    "ecommerce",
+    "muebleria"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
