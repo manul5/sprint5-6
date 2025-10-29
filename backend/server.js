@@ -4,13 +4,18 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
-      console.log('¡Conexión exitosa a MongoDB!');
-    })
-    .catch((err) => {
-      console.error('Error al conectar a MongoDB:', err);
-    });
+// Validar que existe MONGODB_URI
+if (!process.env.MONGODB_URI) {
+  console.error('\n⚠️  ERROR: Falta la variable MONGODB_URI en el archivo .env');
+} else {
+  mongoose.connect(process.env.MONGODB_URI)
+      .then(() => {
+        console.log('✅ ¡Conexión exitosa a MongoDB!');
+      })
+      .catch((err) => {
+        console.error('❌ Error al conectar a MongoDB:', err.message);
+      });
+}
 
 // Habilitar CORS
 app.use(cors());

@@ -11,7 +11,7 @@ const productoSchema = new mongoose.Schema({
     },
     precio: {
         type: Number,
-        require: true,
+        required: true,
         min: 0
     },
     stock: {
