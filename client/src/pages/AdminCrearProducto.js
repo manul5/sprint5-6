@@ -53,7 +53,7 @@ export default function AdminCrearProducto() {
         )
       };
 
-      const response = await fetch('http://localhost:3000/api/productos', {
+      const response = await fetch('https://sprint5-6-1.onrender.com/api/productos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

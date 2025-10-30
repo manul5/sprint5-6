@@ -9,7 +9,7 @@ export default function DeleteButton({ id }) {
     if (!confirmar) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
+      const res = await fetch(`https://sprint5-6-1.onrender.com/api/productos/${id}`, {
         method: "DELETE",
       });
 
