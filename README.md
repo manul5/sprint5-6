@@ -2,6 +2,11 @@
 
 Aplicación full-stack de e-commerce para mueblería, construida con React en el frontend y Node.js/Express en el backend.
 
+## 🚀 Sitios Desplegados
+
+- **Frontend:** https://client-murex-pi-23.vercel.app
+- **Backend/API:** https://sprint5-6-1.onrender.com
+
 ## 👥 Integrantes del Equipo
 
 - Giorda Brunella de Lourdes
@@ -35,6 +40,22 @@ Verifica las versiones instaladas con:
 node --version
 npm --version
 ```
+
+## ⚙️ Configuración de Variables de Entorno
+
+Para correr el proyecto localmente, debes crear los siguientes archivos de variables de entorno:
+
+### Backend (`backend/.env`)
+
+```
+PORT=3001
+NODE_ENV=development
+MONGODB_URI=mongodb+srv://equipo7:zek4Cb6XghNK3Vcf@cluster0.wsfgs1g.mongodb.net/HermanosJota?retryWrites=true&w=majority
+```
+
+### Frontend
+
+No es necesario configurar variables de entorno para el frontend si usas la URL local por defecto. Si quieres consumir la API desplegada, puedes modificar la URL directamente en el código fuente (`App.js`).
 
 ## 🚀 Instalación
 
