@@ -40,11 +40,12 @@ export default function ProductDetail({ producto, onVolver, onAgregarCarrito, on
             </ul>
           </div>
 
-          <button id="btn-carrito" onClick={() => onAgregarCarrito(producto)}>
-            Añadir al Carrito
-          </button>
-
-          <DeleteButton id={producto._id} onRefrescarProductos={onRefrescarProductos} />
+          <div className="actions-container">
+            <button id="btn-carrito" onClick={() => onAgregarCarrito(producto)}>
+              Añadir al Carrito
+            </button>
+            <DeleteButton id={producto._id} onRefrescarProductos={onRefrescarProductos} />
+          </div>
           
         </section>
       </article>
