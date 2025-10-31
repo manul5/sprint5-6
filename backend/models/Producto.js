@@ -19,10 +19,24 @@ const productoSchema = new mongoose.Schema({
         default: 0,
         min: 0
     },
+    categoria:{
+        type: String,
+        required: true
+    },
+    destacado:{
+        type: Boolean,
+        default: false
+    },
     imagenUrl: {
         type: String,
         default: ''
-    }
+    },
+    especificaciones:[
+        {
+            titulo: { type: String, required: true },
+            valor: { type: String, required: true }
+        }
+    ]
 }, {
     timestamps: true
 })

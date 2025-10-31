@@ -1,7 +1,11 @@
 import './ProductCard.css';
 
 const ProductCard = ({ producto, onProductoClick }) => {
-  const imageUrl = `/assets/${producto.imagen.replace('assets/', '')}`;
+  const imageUrl = producto?.imagenUrl
+  ? producto.imagenUrl.startsWith('http') 
+    ? producto.imagenUrl   // URL externa
+    : `/assets/${producto.imagenUrl.replace(/^\/?assets\//, '')}` // ruta local
+  : '/assets/default.jpg';
 
   return (
     <div className="card" onClick={() => onProductoClick(producto)}>

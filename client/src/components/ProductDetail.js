@@ -2,7 +2,11 @@ import './ProductDetail.css';
 import DeleteButton from './DeleteButton';
 
 export default function ProductDetail({ producto, onVolver, onAgregarCarrito, onRefrescarProductos }){
-  const imageUrl = `/assets/${producto.imagen.replace('assets/', '')}`;
+  const imageUrl = producto?.imagenUrl
+  ? producto.imagenUrl.startsWith('http') 
+    ? producto.imagenUrl   // URL externa
+    : `/assets/${producto.imagenUrl.replace(/^\/?assets\//, '')}` // ruta local
+  : '/assets/default.jpg';
 
   return (
     <div className="product-detail">
@@ -24,11 +28,15 @@ export default function ProductDetail({ producto, onVolver, onAgregarCarrito, on
           <div className="producto-especificaciones">
             <h3>Especificaciones</h3>
             <ul>
-              {producto.especificaciones.map((espec, index) => (
-                <li key={index}>
-                  <strong>{espec.titulo}:</strong> {espec.valor}
-                </li>
-              ))}
+              {Array.isArray(producto.especificaciones) && producto.especificaciones.length > 0 ? (
+                  producto.especificaciones.map((esp, i) => (
+                    <li key={i}>
+                      <strong>{esp.titulo}: </strong> {esp.valor}
+                    </li>
+                ))
+              ) : (
+                    <li>No hay especificaciones disponibles</li>
+              )}
             </ul>
           </div>
 

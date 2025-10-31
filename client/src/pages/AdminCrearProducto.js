@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminCrearProducto.css';
 
-export default function AdminCrearProducto() {
+export default function AdminCrearProducto({ onRefrescarProductos }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
     precio: '',
     categoria: '',
-    imagen: '',
+    imagenUrl: '',
     destacado: false,
     especificaciones: [{ titulo: '', valor: '' }]
   });
@@ -43,35 +43,48 @@ export default function AdminCrearProducto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    //validaciones básicas
+    if (!formData.nombre || !formData.descripcion || !formData.precio || !formData.categoria || !formData.imagenUrl) {
+      setMensaje('Error: todos los campos obligatorios deben completarse.');
+      return;
+    }
+
+    if (parseFloat(formData.precio) < 0) {
+      setMensaje('Error: el precio no puede ser negativo.');
+      return;
+    }
+
     try {
       const productoData = {
         ...formData,
         precio: parseFloat(formData.precio),
         especificaciones: formData.especificaciones.filter(
-          espec => espec.titulo && espec.valor
-        )
+          (espec) => espec.titulo && espec.valor
+        ),
       };
 
+      console.log("Datos que se envían:", productoData);
       const response = await fetch('https://sprint5-6-1.onrender.com/api/productos', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productoData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productoData),
       });
 
       if (response.ok) {
-        setMensaje('Producto creado exitosamente');
+        setMensaje('✅ Producto creado exitosamente');
+
+        if (onRefrescarProductos) onRefrescarProductos();
+
         setTimeout(() => {
           navigate('/productos');
         }, 2000);
       } else {
-        setMensaje('Error al crear el producto');
+        setMensaje('Error al crear el producto.');
       }
     } catch (error) {
       console.error('Error:', error);
-      setMensaje('Error al conectar con el servidor');
+      setMensaje('Error al conectar con el servidor.');
     }
   };
 
@@ -83,12 +96,6 @@ export default function AdminCrearProducto() {
           Volver al Catálogo
         </button>
       </div>
-
-      {mensaje && (
-        <div className={`mensaje ${mensaje.includes('Error') ? 'error' : 'exito'}`}>
-          {mensaje}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="form-producto">
         <div className="form-group">
@@ -154,11 +161,11 @@ export default function AdminCrearProducto() {
           <label htmlFor="imagen">URL de la Imagen *</label>
           <input
             type="text"
-            id="imagen"
-            name="imagen"
-            value={formData.imagen}
+            id="imagenUrl"
+            name="imagenUrl"
+            value={formData.imagenUrl}
             onChange={handleChange}
-            placeholder="assets/nombre-imagen.jpg"
+            placeholder="/assets/nombre-imagen.jpg"
             required
           />
         </div>
@@ -183,13 +190,17 @@ export default function AdminCrearProducto() {
                 type="text"
                 placeholder="Título (ej: Material)"
                 value={espec.titulo}
-                onChange={(e) => handleEspecificacionChange(index, 'titulo', e.target.value)}
+                onChange={(e) =>
+                  handleEspecificacionChange(index, 'titulo', e.target.value)
+                }
               />
               <input
                 type="text"
                 placeholder="Valor (ej: Roble macizo)"
                 value={espec.valor}
-                onChange={(e) => handleEspecificacionChange(index, 'valor', e.target.value)}
+                onChange={(e) =>
+                  handleEspecificacionChange(index, 'valor', e.target.value)
+                }
               />
               {formData.especificaciones.length > 1 && (
                 <button
@@ -212,7 +223,11 @@ export default function AdminCrearProducto() {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn-cancelar" onClick={() => navigate('/productos')}>
+          <button
+            type="button"
+            className="btn-cancelar"
+            onClick={() => navigate('/productos')}
+          >
             Cancelar
           </button>
           <button type="submit" className="btn-guardar">
@@ -220,6 +235,11 @@ export default function AdminCrearProducto() {
           </button>
         </div>
       </form>
+      {mensaje && (
+        <div className={`fixed-mensaje ${mensaje.startsWith('Error') ? 'error' : 'exito'}`}>
+          {mensaje}
+        </div>
+      )}
     </div>
   );
 }

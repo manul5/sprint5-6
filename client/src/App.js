@@ -235,7 +235,7 @@ function App() {
             
             <Route 
               path="/admin/crear-producto" 
-              element={<AdminCrearProducto />} 
+              element={<AdminCrearProducto onRefrescarProductos={fetchProductos}/>} 
             />
           </Routes>
         </main>
