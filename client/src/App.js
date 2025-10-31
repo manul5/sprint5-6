@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import Carrito from './pages/Carrito';
 import AdminCrearProducto from './pages/AdminCrearProducto';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 
 // Wrapper para Home
 function HomePage({ productosDestacados, cargando }) {
@@ -178,6 +179,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Navbar cantidadCarrito={carrito.length} />
         
