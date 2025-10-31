@@ -53,7 +53,7 @@ function ProductosPage({ productos, cargando }) {
 }
 
 // Wrapper para ProductDetail
-function ProductDetailPage({ productos, onAgregarCarrito }) {
+function ProductDetailPage({ productos, onAgregarCarrito, onRefrescarProductos }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const producto = productos.find(p => p._id === id);
@@ -80,6 +80,7 @@ function ProductDetailPage({ productos, onAgregarCarrito }) {
       producto={producto}
       onVolver={() => navigate('/productos')}
       onAgregarCarrito={onAgregarCarrito}
+      onRefrescarProductos={onRefrescarProductos}
     />
   );
 }
@@ -112,18 +113,19 @@ function App() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
+  const fetchProductos = async () => {
+    try {
+      const response = await fetch('https://sprint5-6-1.onrender.com/api/productos');
+      const data = await response.json();
+      setProductos(data);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        const response = await fetch('https://sprint5-6-1.onrender.com/api/productos');
-        const data = await response.json();
-        setProductos(data);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setCargando(false);
-      }
-    };
     fetchProductos();
   }, []);
 
@@ -207,6 +209,7 @@ function App() {
                 <ProductDetailPage 
                   productos={productos}
                   onAgregarCarrito={agregarAlCarrito}
+                  onRefrescarProductos={fetchProductos}
                 />
               } 
             />
