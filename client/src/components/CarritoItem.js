@@ -13,10 +13,18 @@ export default function CarritoItem ({ item, onEliminar, onActualizarCantidad  }
     }
   };
 
+  const imageUrl = item?.imagenUrl
+  ? item.imagenUrl.startsWith('http')
+    ? item.imagenUrl
+    : `/assets/${item.imagenUrl.replace(/^\/?assets\//, '')}`
+  : item?.imagen
+    ? `/assets/${item.imagen.replace(/^\/?assets\//, '')}`
+    : '/assets/default.jpg';
+
   return(
     <div className="carrito-item">
       <img 
-        src={`/assets/${item.imagen.replace('assets/', '')}`} 
+        src={imageUrl} 
         alt={item.nombre}
         className="carrito-item-imagen"
       />
