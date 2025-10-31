@@ -1,4 +1,5 @@
 import './ProductDetail.css';
+import DeleteButton from './DeleteButton';
 
 export default function ProductDetail({ producto, onVolver, onAgregarCarrito }){
   const imageUrl = `/assets/${producto.imagen.replace('assets/', '')}`;
@@ -34,6 +35,9 @@ export default function ProductDetail({ producto, onVolver, onAgregarCarrito }){
           <button id="btn-carrito" onClick={() => onAgregarCarrito(producto)}>
             Añadir al Carrito
           </button>
+
+          <DeleteButton id={producto._id} />
+          
         </section>
       </article>
     </div>

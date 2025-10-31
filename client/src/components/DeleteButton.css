@@ -1,29 +1,48 @@
 .btn-eliminar {
-  background-color: #A0522D; 
-  color: #F5E6D3; 
-  border: none;
-  padding: 10px 16px;
+  display: block;
+  width: 100%; 
+  margin-top: 0.6rem;
+  background-color: transparent;
+  color: #B23A48;
+  border: 2px solid #B23A48;
+  padding: 0.6rem;
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
-  font-weight: 500; 
+  font-weight: 600; 
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 1rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.25s, transform 0.15s;
+  transition: all 0.25s ease;
 }
 
 .btn-eliminar:hover {
-  background-color: #D4A437; 
-  transform: scale(1.03);
+  background-color: #B23A48; 
+  color: #F5E6D3;
+  transform: scale(0.98);
 }
 
 .btn-eliminar:active {
-  transform: scale(0.97);
+  background-color: #8E2E3A;
+  transform: scale(0.98);
 }
 
 .btn-eliminar:disabled {
-  background-color: #aaa;
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
+}
+
+@media (min-width: 481px) {
+  .btn-eliminar {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .btn-eliminar {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+    margin-top: 0.8rem;
+  }
 }

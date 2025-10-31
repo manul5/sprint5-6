@@ -18,7 +18,7 @@ function HomePage({ productosDestacados, cargando }) {
     <Home 
       productosDestacados={productosDestacados}
       cargando={cargando}
-      onProductoClick={(producto) => navigate(`/productos/${producto.id}`)}
+      onProductoClick={(producto) => navigate(`/productos/${producto._id}`)}
       onVerCatalogo={() => navigate('/productos')}
     />
   );
@@ -46,7 +46,7 @@ function ProductosPage({ productos, cargando }) {
     <ProductList 
       productos={productosFiltrados}
       cargando={cargando}
-      onProductoClick={(producto) => navigate(`/productos/${producto.id}`)}
+      onProductoClick={(producto) => navigate(`/productos/${producto._id}`)}
       terminoBusqueda={terminoBusqueda}
     />
   );
@@ -56,7 +56,7 @@ function ProductosPage({ productos, cargando }) {
 function ProductDetailPage({ productos, onAgregarCarrito }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const producto = productos.find(p => p.id === parseInt(id));
+  const producto = productos.find(p => p._id === id);
 
   if (!producto && productos.length > 0) {
     return (
